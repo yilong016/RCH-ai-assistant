@@ -1,2 +1,2 @@
-# RCH-ai-assistant
-RCH assistent powered by generative AI
+# rch-ai-assistant
+rch assistent powered by generative AI
