@@ -69,7 +69,7 @@ As soon as you have successfully cloned the repo, created a virtual environment,
 To start up the application with its basic frontend you simply need to run the following command in your terminal while in the root of the repositories' directory:
 
 ```
-streamlit run app.py
+streamlit run Home.py
 ```
 As soon as the application is up and running in your browser of choice you can begin uploading images and or text questions and generating natural language responses detailing the images or the specific questions that were asked.. 
 
