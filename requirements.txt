@@ -1,0 +1,8 @@
+boto3
+langchain
+langchain-aws
+crewai
+streamlit
+chardet
+python-dotenv
+langchain-community
