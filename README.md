@@ -13,9 +13,9 @@ The architecture and flow of the sample application will be:
 
 When a user interacts with the GenAI app, the flow is as follows:
 
-1. (1a) The user uploads an image file to the streamlit app, with or without a text question. (app.py). (1b) The user inserts a text question into to the streamlit app, with or without an image. (app.py).
+1. (1a) The user uploads an image file to the streamlit app, with or without a text question. (Home.py). (1b) The user inserts a text question into to the streamlit app, with or without an image. (Home.py).
 2. The streamlit app, takes the image file and/or text and saves it. The image and/or text is passed into Amazon Bedrock (Anthropic Claude 3). (llm_invoke.py).
-3. A natural language response is returned to the end user, either describing the image, answering a question about the image, or answering a question in general. (app.py).
+3. A natural language response is returned to the end user, either describing the image, answering a question about the image, or answering a question in general. (Home.py).
 
 # How to use this Repo:
 
@@ -29,11 +29,6 @@ The first step of utilizing this repo is performing a git clone of the repositor
 ```
 git clone https://github.com/yilong016/rch-ai-assistant.git
 ```
-
-After cloning the repo onto your local machine, open it up in your favorite code editor. The file structure of this repo is broken into 3 key files,
-the app.py file, the llm_invoke.py file, and the requirements.txt. The app.py file houses the frontend application (a streamlit app). 
-The llm_invoke.py file houses the logic of the application, including the image encoding and Amazon Bedrock API invocations.
-The requirements.txt file contains all necessary dependencies for this sample application to work.
 
 ## Step 2:
 Set up a python virtual environment in the root directory of the repository and ensure that you are using Python 3.9. This can be done by running the following commands:
