@@ -25,14 +25,42 @@ def main():
     # default listing container that houses the image upload field
     with st.container():
         # header that is shown on the web UI
-        # st.subheader('Image File Upload:')
+        st.subheader('Listing写作')
+
         # the image upload field, the specific ui element that allows you to upload an image
         # when an image is uploaded it saves the file to the directory, and creates a path to that image
-        File = st.file_uploader('Product image', type=["webp", "png", "jpg", "jpeg"], key="new")
-        brand = st.text_input("Brand", 'The Peanutshell')
-        features = st.text_input("Product Keywords", "The Peanutshell Crib Mobile for Boys or Girls, Unicorn, Stars, Rainbow, Montessori Inspired")
+        File = st.file_uploader('商品图片', type=["webp", "png", "jpg", "jpeg"], key="new")
+        brand = st.text_input("品牌", 'The Peanutshell')
+        features = st.text_input("商品关键词", "The Peanutshell Crib Mobile for Boys or Girls, Unicorn, Stars, Rainbow, Montessori Inspired")
 
-        asin = st.text_input("Reference Amazon ASIN", 'B0BZYCJK89')
+        #asin = st.text_input("参考热卖商品 Amazon ASIN", 'B0BZYCJK89')
+
+        st.divider()
+
+        asin_label = ['B0BZYCJK89', 'B0BGYWPWNC', 'B0CX23V2ZK']
+        asin = st.selectbox('请选择参考热卖商品', asin_label)
+
+        filename = './data/' + 'asin_' + asin + '_product.json'
+        with open(filename, 'r', encoding='utf-8') as file:
+            product_data = file.read()
+            
+        product_results = json.loads(product_data)
+        
+        as_title = product_results['results'][0]['content']['title']
+        as_bullet = product_results['results'][0]['content']['bullet_points']
+        as_des = product_results['results'][0]['content']['description']
+
+        expander = st.expander('详细信息')
+        expander.write('Title:')
+        expander.write(as_title)
+
+        expander.write('Bullet Points:')
+        expander.write(as_bullet)
+
+        expander.write('Description:')
+        expander.write(as_des)
+
+        #expander.write(as_title+'\n'+as_bullet+'\n'+as_des)
 
         # this is the button that triggers the invocation of the model, processing of the image and/or question
         result = st.button("Submit")

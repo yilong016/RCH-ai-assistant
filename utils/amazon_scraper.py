@@ -9,9 +9,6 @@ import boto3
 import requests
 from pprint import pprint
 
-import requests
-from pprint import pprint
-
 def get_product(asin, do):
     print(asin, do)
     # Structure payload.

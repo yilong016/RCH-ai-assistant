@@ -16,12 +16,22 @@ from utils.amazon_scraper import get_product, get_reviews, get_bestsellers
 # loading in variables from .env file
 load_dotenv()
 
+data_folder = os.getenv("data_folder")
+
+
 # instantiating the Bedrock client, and passing in the CLI profile
 boto3.setup_default_session(profile_name=os.getenv("profile_name"))
 bedrock = boto3.client('bedrock-runtime', 'us-east-1', endpoint_url='https://bedrock-runtime.us-east-1.amazonaws.com')
 
 def gen_listing_prompt(asin, domain, keywords, features, language):
-    results = get_product(asin, domain)
+    # results = get_product(asin, domain)
+
+    filename = './data/' + 'asin_' + asin + '_product.json'
+    with open(filename, 'r', encoding='utf-8') as file:
+        data = file.read()
+
+    results = json.loads(data)
+
     as_title = results['results'][0]['content']['title']
     as_bullet = results['results'][0]['content']['bullet_points']
     as_des = results['results'][0]['content']['description']
@@ -64,8 +74,15 @@ def gen_listing_prompt(asin, domain, keywords, features, language):
 
 
 def gen_voc_prompt(asin, domain, language):
+
     print('asin:' + asin, 'domain:' + domain)
-    results = get_reviews(asin, domain)
+    #results = get_reviews(asin, domain)
+
+    filename = './data/' + 'asin_' + asin + '_reviews.json'
+    with open(filename, 'r', encoding='utf-8') as file:
+        reviews = file.read()
+
+    results = json.loads(reviews)
 
     system_role = '''
     You are an analyst tasked with analyzing the provided customer review examples on an e-commerce platform and summarizing them into a comprehensive Voice of Customer (VoC) report. Your job is to carefully read through the product description and reviews, identify key areas of concern, praise, and dissatisfaction regarding the product. You will then synthesize these findings into a well-structured report that highlights the main points for the product team and management to consider.

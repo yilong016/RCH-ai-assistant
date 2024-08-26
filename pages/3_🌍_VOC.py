@@ -18,7 +18,21 @@ def main():
     language_lable = st.sidebar.selectbox('Select Language', language_options)
 
     with st.container():
-        asin = st.text_input("Amazon ASIN", 'B0BZYCJK89')
+        #asin = st.text_input("Amazon ASIN", 'B0BZYCJK89')
+        st.subheader('VOC 客户之声')
+
+        asin_label = ['B0BZYCJK89', 'B0BGYWPWNC', 'B0CX23V2ZK']
+        asin = st.selectbox('请选择 Amazon ASIN', asin_label)
+
+        reviews = ''
+        filename = './data/' + 'asin_' + asin + '_reviews.json'
+        with open(filename, 'r', encoding='utf-8') as file:
+            reviews = file.read()
+
+        expander = st.expander('用户评论信息')
+        expander.write(reviews)
+
+        #st.json(json.loads(reviews))
 
         result = st.button("Submit")
 
