@@ -27,18 +27,14 @@ def main():
         # header that is shown on the web UI
         st.subheader('Listing写作')
 
-        # the image upload field, the specific ui element that allows you to upload an image
-        # when an image is uploaded it saves the file to the directory, and creates a path to that image
         File = st.file_uploader('商品图片', type=["webp", "png", "jpg", "jpeg"], key="new")
-        brand = st.text_input("品牌", 'The Peanutshell')
-        features = st.text_input("商品关键词", "The Peanutshell Crib Mobile for Boys or Girls, Unicorn, Stars, Rainbow, Montessori Inspired")
-
-        #asin = st.text_input("参考热卖商品 Amazon ASIN", 'B0BZYCJK89')
+        brand = st.text_input("品牌", '')
+        features = st.text_input("商品关键词", '')
 
         st.divider()
 
         asin_label = ['B0BZYCJK89', 'B0BGYWPWNC', 'B0CX23V2ZK']
-        asin = st.selectbox('请选择参考热卖商品', asin_label)
+        asin = st.selectbox('请选择参考的热卖商品', asin_label)
 
         filename = './data/' + 'asin_' + asin + '_product.json'
         with open(filename, 'r', encoding='utf-8') as file:
@@ -60,18 +56,13 @@ def main():
         expander.write('Description:')
         expander.write(as_des)
 
-        #expander.write(as_title+'\n'+as_bullet+'\n'+as_des)
-
-        # this is the button that triggers the invocation of the model, processing of the image and/or question
-        result = st.button("Submit")
+        result = st.button("点击生成商品Listing")
 
         # if the button is pressed, the model is invoked, and the results are output to the front end
         if result:
             # if an image is uploaded, a file will be present, triggering the image_to_text function
             if File is not None:
-                # the image is displayed to the front end for the user to see
-                # st.image(File)
-                # determine the path to temporarily save the image file that was uploaded
+
                 save_folder = os.getenv("save_folder")
                 print(save_folder)
                 print('filename:' + File.name)
@@ -84,9 +75,7 @@ def main():
 
                 # once the save path exists...
                 if save_path.exists():
-                    # write a success message saying the image has been successfully saved
-                    # st.success(f'Image {File.name} is successfully saved!')
-                    # running the image to text task, and outputting the results to the front end
+
                     file_name = save_path
 
                     if mode_lable == 'PE':
@@ -108,7 +97,6 @@ def main():
                     st.write("Title:\n")
                     st.write(data['title'])
 
-                    # #get all string from bullet points data['bullets']
                     st.write("Bullet Points:\n")
                     bullet_points = ""
                     for item in data['bullets']:
@@ -120,12 +108,9 @@ def main():
                     
                     # removing the image file that was temporarily saved to perform the question and answer task
                     os.remove(save_path)
-
-                    #st.rerun()
-            # if an Image is not uploaded, but a question is, the text_to_text function is invoked
             else:
                 # running a text to text task, and outputting the results to the front end
-                st.write('select product image')
+                st.write('请选择商品图片')
     
 
 if __name__ == '__main__':
