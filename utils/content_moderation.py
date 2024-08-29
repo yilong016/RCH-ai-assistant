@@ -5,10 +5,7 @@ import base64
 from PIL import Image
 import io
 
-
 bedrock_client = boto3.client(service_name = 'bedrock-runtime',region_name = 'us-west-2')
-
-images='./2.webp'
 
 def image_base64_encoder(image_path, max_size=1568):
     with open(image_path, "rb") as f:

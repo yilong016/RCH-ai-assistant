@@ -22,7 +22,7 @@ def main():
     
     with audit_image:
         st.title("图像审核")
-        st.subheader("上传图片")
+        st.subheader("上传图片，检测是否涉嫌侵权")
         File = st.file_uploader('请选择要审核的图片', type=["webp", "png", "jpg", "jpeg"], key="new")
         result = st.button("提交", key="image_submit")
         if result:
@@ -52,7 +52,7 @@ def main():
                         st.image(File, caption='Uploaded Image', use_column_width=True)
 
                     # 3. 显示图片审核结果功能
-                    st.subheader("图片审核结果")
+                    st.subheader("审核结果")
                     data = json.loads(output[0]['text'])
                     st.write('【侵权检测结果】', '是' if data['infringement'] else '否')
                     st.write('【置信度】', data['confidence'])
