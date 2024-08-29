@@ -29,12 +29,10 @@ def main():
         with open(filename, 'r', encoding='utf-8') as file:
             reviews = file.read()
 
-        expander = st.expander('用户评论信息')
-        expander.write(reviews)
+        st.text('用户评论信息')
+        st.json(json.loads(reviews)['results'][0]['content'])
 
-        #st.json(json.loads(reviews))
-
-        result = st.button("Submit")
+        result = st.button("点击生成报告")
 
         if result:
             domain = "com"

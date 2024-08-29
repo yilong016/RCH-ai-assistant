@@ -57,7 +57,7 @@ def get_reviews(asin, do):
 
     # Print prettified response to stdout.
     # pprint("reponse message:" + str(response.status_code))
-    pprint(response.json())
+    # pprint(response.json())
     
     return response.json()
 
