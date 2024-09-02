@@ -109,6 +109,21 @@ def generate_or_vary_image(model_id, positive_prompt=None, negative_prompt='low 
             body = json.dumps(request_data)
             
         elif model_id == 'amazon.titan-image-generator-v2:0':
+            if kwargs.get('task_type') == "image generation":
+                body = json.dumps({
+                    "taskType": "TEXT_IMAGE",
+                    "textToImageParams": {
+                        "text": positive_prompt,
+                        "negativeText": negative_prompt
+                    },
+                    "imageGenerationConfig": {
+                        "numberOfImages": kwargs.get('numberOfImages', 1),
+                        "height": kwargs.get('height', 1024),
+                        "width": kwargs.get('width', 1024),
+                        "cfgScale": kwargs.get('cfgScale', 8.0),
+                        "seed": kwargs.get('seed', 0)
+                    }
+                })
             if kwargs.get('task_type') == "image conditioning":
                 input_image=load_and_resize_image(source_image)
                 body = json.dumps({
@@ -127,7 +142,7 @@ def generate_or_vary_image(model_id, positive_prompt=None, negative_prompt='low 
                     "cfgScale": 8.0
                     }
                 })
-            elif kwargs.get('task_type') == "color guided content":
+            if kwargs.get('task_type') == "color guided content":
                 input_image=load_and_resize_image(source_image)
                 body = json.dumps({
                     "taskType": "COLOR_GUIDED_GENERATION",
@@ -144,7 +159,7 @@ def generate_or_vary_image(model_id, positive_prompt=None, negative_prompt='low 
                     "cfgScale": 8.0
                     }
                 })
-            elif kwargs.get('task_type') == "background removal":
+            if kwargs.get('task_type') == "background removal":
                 input_image=load_and_resize_image(source_image)
                 body = json.dumps({
                     "taskType": "BACKGROUND_REMOVAL",
@@ -153,20 +168,8 @@ def generate_or_vary_image(model_id, positive_prompt=None, negative_prompt='low 
                     }
                 })
             else:
-                body = json.dumps({
-                    "taskType": "TEXT_IMAGE",
-                    "textToImageParams": {
-                        "text": positive_prompt,
-                        "negativeText": negative_prompt
-                    },
-                    "imageGenerationConfig": {
-                        "numberOfImages": kwargs.get('numberOfImages', 1),
-                        "height": kwargs.get('height', 1024),
-                        "width": kwargs.get('width', 1024),
-                        "cfgScale": kwargs.get('cfgScale', 8.0),
-                        "seed": kwargs.get('seed', 0)
-                    }
-                })
+                return 1, "parameters error, please check again"
+
         else:
             raise ValueError(f"Unsupported model_id: {model_id}")
 

@@ -45,7 +45,7 @@ def main():
         if result:
             if text:
                 with st.spinner('正在生成图片...'):
-                    status, image_result = generate_or_vary_image(model_id=selected_model, positive_prompt=text)
+                    status, image_result = generate_or_vary_image(model_id=selected_model, positive_prompt=text, task_type='image generation')
                     if status == 0:
                         st.success("图片生成成功!")
                         display_and_resize_image(image_result, target_size=768)
@@ -216,7 +216,7 @@ def main():
                 with col2:
                     st.subheader("变体图片")
                     if st.session_state.generated_image:
-                        display_and_resize_image(st.session_state.generated_image)
+                        display_and_resize_image(st.session_state.generated_image, 512)
                     else:
                         st.info("生成的变体图片将显示在这里")
     
@@ -292,7 +292,7 @@ def main():
     st.markdown("由 AI 驱动 | 创建于 2024")
 
 
-def display_and_resize_image(file_name, target_size=768):
+def display_and_resize_image(file_name, target_size=512):
     """
     打开图片文件，根据需要调整大小并显示。
 
