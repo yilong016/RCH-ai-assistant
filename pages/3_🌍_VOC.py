@@ -18,6 +18,8 @@ model_Id = 'meta.llama3-70b-instruct-v1:0'
             #'anthropic.claude-3-5-sonnet-20240620-v1:0' 
             #'anthropic.claude-3-sonnet-20240229-v1:0'
 
+st.set_page_config(page_title="VoC客户之声", page_icon="🎨", layout="wide")
+
 def main():
     language_options = ['English', 'Chinese']
     language_lable = st.sidebar.selectbox('Select Language', language_options)

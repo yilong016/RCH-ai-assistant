@@ -10,6 +10,7 @@ from utils.listing_voc_agents import create_listing
 
 from PIL import Image
 
+import xml.etree.ElementTree as ET
 import logging
 logger = logging.getLogger(__name__)
 
@@ -89,7 +90,7 @@ def main():
                         user_prompt = gen_listing_prompt(asin, 'com', brand, features, language_lable)
                         print('user_prompt:' + user_prompt)
                         
-                        output = bedrock_converse_api_with_image(model_Id_multi_modal, file_name, user_prompt)
+                        llm_output = bedrock_converse_api_with_image(model_Id_multi_modal, file_name, user_prompt)
                         #st.write(output)
                     elif mode_lable == 'Agent':
                         response = create_listing(asin, file_name, brand, features)
@@ -97,21 +98,19 @@ def main():
                         rslist = str(response['output']).rsplit('>')
                         output = rslist[-1]
 
-                   # print("output:" + output)
-                    data = json.loads(output)
+                    print("output:" + llm_output)
+
+                    title, bullets, description = parse_listing_xml_response(llm_output)
 
                     st.write("Title:\n")
-                    st.write(data['title'])
+                    st.write(title)
 
                     st.write("Bullet Points:\n")
-                    bullet_points = ""
-                    for item in data['bullets']:
-                        bullet_points += "• " + item + "\n\n"
-                    st.markdown(bullet_points)
+                    st.write(bullets)
 
                     st.write("Description:\n")
-                    st.write(data['description'])
-                    
+                    st.write(description)
+    
                     # removing the image file that was temporarily saved to perform the question and answer task
                     os.remove(save_path)
             else:
@@ -119,23 +118,41 @@ def main():
                     user_prompt = gen_listing_prompt(asin, 'com', brand, features, language_lable)
                     print('user_prompt:' + user_prompt)
                         
-                    output = bedrock_converse_api(model_Id_multi_modal, user_prompt)
-                    print(output)
+                    llm_output = bedrock_converse_api(model_Id, user_prompt)
+                    print(llm_output)
 
-                    data = json.loads(output)
+                    title, bullets, description = parse_listing_xml_response(llm_output)
 
                     st.write("Title:\n")
-                    st.write(data['title'])
+                    st.write(title)
 
                     st.write("Bullet Points:\n")
-                    bullet_points = ""
-                    for item in data['bullets']:
-                        bullet_points += "• " + item + "\n\n"
-                    st.markdown(bullet_points)
+                    st.write(bullets)
 
                     st.write("Description:\n")
-                    st.write(data['description'])
+                    st.write(description)
     
+def parse_listing_xml_response(xml_string):
+    try:
+        # 将XML字符串包装在根元素中
+        wrapped_xml = f"<root>{xml_string}</root>"
+        
+        # 解析XML
+        root = ET.fromstring(wrapped_xml)
+        
+        # 提取title和bullets
+        title = root.find('title').text.strip() if root.find('title') is not None else ""
+        bullets = root.find('bullets').text.strip() if root.find('bullets') is not None else ""
+        description = root.find('description').text.strip() if root.find('description') is not None else ""
+        
+        return title, bullets, description
+    except ET.ParseError:
+        print("XML解析错误")
+        return None
+    except Exception as e:
+        print(f"发生错误: {str(e)}")
+        return None
+
 
 if __name__ == '__main__':
     main()

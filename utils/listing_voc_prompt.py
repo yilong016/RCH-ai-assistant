@@ -58,8 +58,13 @@ def gen_listing_prompt(asin, domain, brand, features, language):
         <keywords>{ft}</keywords> 
     </product_information>
 
-    In your output, only return in JSON format, do not provide any additional explanation.
-    the key of json: "title", "bullets", description". Please output at least 5 bullets and translate the reuslt into {lang}
+    **Respond in valid XML format with the tags as "title", "bullets", "description"**. 
+    Here is one sample:
+        <title>{title}</title>
+        <bullets>{bullet}</title>
+        <description>{des}</description>
+
+    please answer it in {lang}
     '''
 
     user_prompt = prompt_template.format(title=as_title, bullet=as_bullet, des=as_des, kw=brand, ft=features,lang=language)
