@@ -5,13 +5,18 @@ from pathlib import Path
 import os
 import json
 from dotenv import load_dotenv
-from utils.listing_voc_prompt import image_to_text, text_to_text, gen_listing_prompt, gen_voc_prompt
+from utils.listing_voc_prompt import gen_listing_prompt, gen_voc_prompt, bedrock_converse_api
 from utils.listing_voc_agents import create_listing
 
 from PIL import Image
 
 import logging
 logger = logging.getLogger(__name__)
+
+model_Id = 'meta.llama3-70b-instruct-v1:0'
+            #'meta.llama3-70b-instruct-v1:0' 
+            #'anthropic.claude-3-5-sonnet-20240620-v1:0' 
+            #'anthropic.claude-3-sonnet-20240229-v1:0'
 
 def main():
     language_options = ['English', 'Chinese']
@@ -36,8 +41,13 @@ def main():
 
         if result:
             domain = "com"
-            system_prompt, user_prompt  = gen_voc_prompt(asin, domain, language_lable)
-            output = text_to_text(system_prompt, user_prompt)
+            user_prompt  = gen_voc_prompt(asin, domain, language_lable)
+
+            # print("user_prompt:" + user_prompt)
+
+            # output = text_to_text(system_prompt, user_prompt)
+
+            output = bedrock_converse_api(model_Id, user_prompt)
 
             st.write(output)
 
