@@ -5,7 +5,7 @@ from pathlib import Path
 import os
 import json
 from dotenv import load_dotenv
-from utils.listing_voc_prompt import image_to_text, text_to_text, gen_listing_prompt, gen_voc_prompt
+from utils.listing_voc_prompt import gen_listing_prompt, gen_voc_prompt
 from utils.listing_voc_agents import create_listing
 
 from PIL import Image

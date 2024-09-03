@@ -5,13 +5,20 @@ from pathlib import Path
 import os
 import json
 from dotenv import load_dotenv
-from utils.listing_voc_prompt import image_to_text, text_to_text, gen_listing_prompt, gen_voc_prompt
+from utils.listing_voc_prompt import gen_listing_prompt, bedrock_converse_api, bedrock_converse_api_with_image
 from utils.listing_voc_agents import create_listing
 
 from PIL import Image
 
 import logging
 logger = logging.getLogger(__name__)
+
+
+model_Id_multi_modal = 'anthropic.claude-3-sonnet-20240229-v1:0'
+                    #'meta.llama3-70b-instruct-v1:0' 
+                    #'anthropic.claude-3-5-sonnet-20240620-v1:0' 
+                    #'anthropic.claude-3-sonnet-20240229-v1:0'
+model_Id = 'meta.llama3-70b-instruct-v1:0' 
 
 def main():
     # load environment variables
@@ -79,11 +86,10 @@ def main():
                     file_name = save_path
 
                     if mode_lable == 'PE':
-                        system_prompt, user_prompt = gen_listing_prompt(asin, 'com', brand, features, language_lable)
-                        print('system_prompt:' + system_prompt)
+                        user_prompt = gen_listing_prompt(asin, 'com', brand, features, language_lable)
                         print('user_prompt:' + user_prompt)
                         
-                        output = image_to_text(file_name, system_prompt, user_prompt)
+                        output = bedrock_converse_api_with_image(model_Id_multi_modal, file_name, user_prompt)
                         #st.write(output)
                     elif mode_lable == 'Agent':
                         response = create_listing(asin, file_name, brand, features)
@@ -91,7 +97,7 @@ def main():
                         rslist = str(response['output']).rsplit('>')
                         output = rslist[-1]
 
-                    print("output:" + output)
+                   # print("output:" + output)
                     data = json.loads(output)
 
                     st.write("Title:\n")
@@ -109,8 +115,26 @@ def main():
                     # removing the image file that was temporarily saved to perform the question and answer task
                     os.remove(save_path)
             else:
-                # running a text to text task, and outputting the results to the front end
-                st.write('请选择商品图片')
+                if mode_lable == 'PE':
+                    user_prompt = gen_listing_prompt(asin, 'com', brand, features, language_lable)
+                    print('user_prompt:' + user_prompt)
+                        
+                    output = bedrock_converse_api(model_Id_multi_modal, user_prompt)
+                    print(output)
+
+                    data = json.loads(output)
+
+                    st.write("Title:\n")
+                    st.write(data['title'])
+
+                    st.write("Bullet Points:\n")
+                    bullet_points = ""
+                    for item in data['bullets']:
+                        bullet_points += "• " + item + "\n\n"
+                    st.markdown(bullet_points)
+
+                    st.write("Description:\n")
+                    st.write(data['description'])
     
 
 if __name__ == '__main__':
